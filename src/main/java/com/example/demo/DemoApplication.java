@@ -15,7 +15,7 @@ public class DemoApplication {
 
 	@GetMapping("test")
 	public String test(){
-		return "Response from SpringBoot application";
+		return "Response from SpringBoot app";
 	}
 
 }

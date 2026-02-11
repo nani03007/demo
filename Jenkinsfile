@@ -29,11 +29,12 @@ pipeline{
          stage('Deploy') {
             steps {
                 script {
-                     sh 'cp $BUILD_JAR $APP_DIR'
+                     sh 'cp $BUILD_JAR $APP_DIR/$JAR_NAME'
                 }
             }
         }
     }
 }
+
 
 

@@ -8,8 +8,9 @@ pipeline{
         JAR_NAME = "app.jar"
         BUILD_JAR = "target/demo-0.0.3-SNAPSHOT.jar"
         IMAGE="veera03007/springboot-app"
-        USER_NAME=credentials('dockerhub')."veera03007"
-        PASSWORD=credentials('dockerhub')."Naruto@7019"
+        DOCKERHUB_CREDS = credentials('dockerhub')
+        DOCKERHUB_CREDS_USR="veera03007"
+        DOCKERHUB_CREDS_PSW="Naruto@7019"
 
     }
     stages{
@@ -18,7 +19,6 @@ pipeline{
                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/nani03007/demo.git']])
         }
         }
-    }
         stage('Build maven project'){
             steps{
                 sh "mvn clean install"
@@ -34,7 +34,7 @@ pipeline{
         stage('Docker Build') {
             steps {
                 script {
-                    sh 'docker build -t $IMAGE .'
+                    sh 'docker build -t veera03007/springboot-app .'
                 }
             }
         }
@@ -49,15 +49,14 @@ pipeline{
         stage('Dockerhub login') {
             steps {
                 script {
-                    sh 'echo $PASS | docker login -u $USER --password-stdin'
+                    sh "docker login -u ${DOCKERHUB_CREDS_USR} -p ${DOCKERHUB_CREDS_PSW}"
                 }
             }
         }
         stage('Push Dockerhub') {
             steps {
                 script {
-                sh 'docker tag springboot-app veera03007/springboot-app:latest'
-                sh 'docker push veera03007/springboot-app:latest'
+                  sh 'docker push veera03007/springboot-app'
                 }
             }
         }
@@ -74,6 +73,7 @@ pipeline{
             }
         }
     }
+}
 
 
 

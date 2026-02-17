@@ -7,7 +7,6 @@ pipeline{
         APP_DIR = "/opt/springboot-app"
         JAR_NAME = "app.jar"
         BUILD_JAR = "target/demo-0.0.3-SNAPSHOT.jar"
-        IMAGE="veera03007/springboot-app:latest"
     }
     stages{
         stage('Checkout'){
@@ -18,7 +17,7 @@ pipeline{
     }
         stage('Build maven project'){
             steps{
-                sh "mvn clean install -DskipTests=true"
+                sh "mvn clean install"
             }
         }
         stage('Test') {
@@ -31,7 +30,7 @@ pipeline{
         stage('Docker Build') {
             steps {
                 script {
-                    sh 'docker build -t $IMAGE .'
+                    sh 'docker build -t demo-app .'
                 }
             }
         }
@@ -39,7 +38,7 @@ pipeline{
             steps {
                 script {
                     sh 'docker rm -f mycontainer || true'
-                    sh 'docker run -d --name demo -p 8080:80 $IMAGE'
+                    sh 'docker run -d --name demo -p 8080:9999 demo-app'
                 }
             }
         }
@@ -58,7 +57,8 @@ pipeline{
         stage('Push Dockerhub') {
             steps {
                 script {
-                    sh 'docker push $IMAGE'
+                sh 'docker tag demo-app veera03007/demo-app:latest'
+                sh 'docker push veera03007/demo-app:latest'
                 }
             }
         }
@@ -75,6 +75,7 @@ pipeline{
             }
         }
     }
+
 
 
 

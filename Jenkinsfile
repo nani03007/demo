@@ -17,6 +17,7 @@ pipeline{
                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/nani03007/demo.git']])
         }
         }
+    }
         stage('Build maven project'){
             steps{
                 sh "mvn clean install -DskipTests=true"
@@ -59,6 +60,7 @@ pipeline{
         }
     }
 }
+
 
 
 

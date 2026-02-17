@@ -7,10 +7,7 @@ pipeline{
         APP_DIR = "/opt/springboot-app"
         JAR_NAME = "app.jar"
         BUILD_JAR = "target/demo-0.0.3-SNAPSHOT.jar"
-        IMAGE="veera03007/springboot-app"
-        DOCKER_CREDS = credentials('dockerhub')
-        DOCKER_CREDS_PSW="Naruto@7019"
-        DOCKER_CREDS_USR="veera03007"
+        IMAGE="veera03007/springboot-app:latest"
     }
     stages{
         stage('Checkout'){
@@ -41,6 +38,7 @@ pipeline{
         stage('Docker Run') {
             steps {
                 script {
+                    sh 'docker rm -f mycontainer || true'
                     sh 'docker run -d --name demo -p 8080:9999 $IMAGE'
                 }
             }
@@ -72,6 +70,7 @@ pipeline{
             }
         }
     }
+
 
 
 

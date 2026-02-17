@@ -9,9 +9,6 @@ pipeline{
         BUILD_JAR = "target/demo-0.0.3-SNAPSHOT.jar"
         IMAGE="veera03007/springboot-app"
         DOCKERHUB_CREDS = credentials('dockerhub')
-        DOCKERHUB_CREDS_USR="veera03007"
-        DOCKERHUB_CREDS_PSW="Naruto@7019"
-
     }
     stages{
         stage('Checkout'){
@@ -69,6 +66,7 @@ pipeline{
         }
     }
 }
+
 
 
 

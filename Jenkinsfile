@@ -39,14 +39,19 @@ pipeline{
             steps {
                 script {
                     sh 'docker rm -f mycontainer || true'
-                    sh 'docker run -d --name demo -p 8080:9999 $IMAGE'
+                    sh 'docker run -d --name demo -p 8080:80 $IMAGE'
                 }
             }
         }
         stage('Dockerhub login') {
             steps {
+                   withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub',
+                    usernameVariable: 'USER',
+                    passwordVariable: 'PASS'
+                )])
                 script {
-                    sh 'echo $DOCKER_CREDS_PSW | docker login -u $DOCKER_CREDS_USR --password-stdin'
+                    sh 'echo $PASS | docker login -u $USER --password-stdin'
                 }
             }
         }
@@ -70,6 +75,7 @@ pipeline{
             }
         }
     }
+
 
 
 

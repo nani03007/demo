@@ -8,8 +8,9 @@ pipeline{
         JAR_NAME = "app.jar"
         BUILD_JAR = "target/demo-0.0.3-SNAPSHOT.jar"
         IMAGE="veera03007/springboot-app"
-        USER_NAME=credentials('dockerhub')."veera03007"
-        PASSWORD=credentials('dockerhub')."Naruto@7019"
+        DOCKER_CREDS = credentials('dockerhub')
+        DOCKER_CREDS_PSW="Naruto@7019"
+        DOCKER_CREDS_USR="veera03007"
     }
     stages{
         stage('Checkout'){
@@ -30,6 +31,13 @@ pipeline{
                 }
             }
         }
+        stage('Docker Build') {
+            steps {
+                script {
+                    sh 'docker build -t $IMAGE .'
+                }
+            }
+        }
         stage('Docker Run') {
             steps {
                 script {
@@ -40,7 +48,7 @@ pipeline{
         stage('Dockerhub login') {
             steps {
                 script {
-                    sh 'echo $PASSWORD | docker login -u $USER_NAME --password-stdin'
+                    sh 'echo $DOCKER_CREDS_PSW | docker login -u $DOCKER_CREDS_USR --password-stdin'
                 }
             }
         }
@@ -59,6 +67,7 @@ pipeline{
             }
         }
     }
+
 
 
 

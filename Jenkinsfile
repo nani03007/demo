@@ -10,7 +10,7 @@ pipeline {
         JAR_NAME = "app.jar"
         BUILD_JAR = "target/demo-0.0.3-SNAPSHOT.jar"
         IMAGE = "veera03007/springboot-app"
-        DOCKERHUB_CREDS = credentials('ba8a1246-d666-40f3-a505-b50ba259e021')
+        DOCKERHUB_CREDS = credentials('dockerhub')
     }
 
     stages {
@@ -67,5 +67,6 @@ pipeline {
         }
     }
 }
+
 
 

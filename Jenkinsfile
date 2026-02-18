@@ -42,7 +42,7 @@ pipeline {
         stage('Docker Run') {
             steps {
                 sh "docker rm -f demo || true"
-                sh "docker run -d --name demo -p 8080:9999 ${IMAGE}"
+                sh "docker run -d --name demo -p 8081:9999 ${IMAGE}"
             }
         }
 
@@ -67,4 +67,5 @@ pipeline {
         }
     }
 }
+
 

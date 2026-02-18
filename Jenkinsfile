@@ -1,86 +1,69 @@
-pipeline{
+pipeline {
     agent any
-    tools{
+
+    tools {
         maven 'MAVEN'
     }
-    environment{
+
+    environment {
         APP_DIR = "/opt/springboot-app"
         JAR_NAME = "app.jar"
         BUILD_JAR = "target/demo-0.0.3-SNAPSHOT.jar"
-        IMAGE="veera03007/springboot-app"
+        IMAGE = "veera03007/springboot-app"
         DOCKERHUB_CREDS = credentials('dockerhub')
     }
-    stages{
-        stage('Checkout'){
-            steps{
-               checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/nani03007/demo.git']])
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
         }
-        }
-        stage('Build maven project'){
-            steps{
+
+        stage('Build') {
+            steps {
                 sh "mvn clean install"
             }
         }
+
         stage('Test') {
             steps {
-                script {
-                    sh 'mvn test'
-                }
+                sh "mvn test"
             }
         }
+
         stage('Docker Build') {
             steps {
-                script {
-                    sh 'docker build -t veera03007/springboot-app .'
-                }
+                sh "docker build -t ${IMAGE} ."
             }
         }
+
         stage('Docker Run') {
             steps {
-                script {
-                    sh 'docker rm -f mycontainer || true'
-                    sh 'docker run -d --name demo -p 8080:9999 demo-app'
-                }
+                sh "docker rm -f demo || true"
+                sh "docker run -d --name demo -p 8080:9999 ${IMAGE}"
             }
         }
-        stage('Dockerhub login') {
+
+        stage('Docker Login') {
             steps {
-                script {
-                    sh "docker login -u ${DOCKERHUB_CREDS_USR} -p ${DOCKERHUB_CREDS_PSW}"
-                }
+                sh """
+                echo ${DOCKERHUB_CREDS_PSW} | docker login -u ${DOCKERHUB_CREDS_USR} --password-stdin
+                """
             }
         }
-        stage('Push Dockerhub') {
+
+        stage('Push Image') {
             steps {
-                script {
-                  sh 'docker push veera03007/springboot-app'
-                }
+                sh "docker push ${IMAGE}"
             }
         }
-         stage('Deploy') {
+
+        stage('Deploy') {
             steps {
-                script {
-                     sh 'cp $BUILD_JAR $APP_DIR/$JAR_NAME'
-                }
+                sh "cp ${BUILD_JAR} ${APP_DIR}/${JAR_NAME}"
             }
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
